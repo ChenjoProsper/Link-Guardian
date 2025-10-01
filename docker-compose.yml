@@ -1,0 +1,25 @@
+
+services:
+  web:
+    build: .
+    container_name: link-guardian-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://link_user:link_user@db:5432/link_db
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    container_name: link-guardian-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=link_user
+      - POSTGRES_PASSWORD=link_user
+      - POSTGRES_DB=link_db
+    ports:
+      - "5433:5432"
+
+volumes:
+  postgres_data:

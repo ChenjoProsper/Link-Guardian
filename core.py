@@ -3,10 +3,8 @@ from sqlalchemy import create_engine,ForeignKey,Column, Integer, String, DateTim
 from sqlalchemy.orm import declarative_base,sessionmaker,relationship
 
 import os
-
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://link_user:link_user@localhost:5432/link_db")
-
-engine = create_engine(DATABASE_URL)
+from config import settings
+engine = create_engine(settings.DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

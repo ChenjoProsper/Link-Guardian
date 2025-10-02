@@ -13,13 +13,15 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
-secret_key = "6b292821039844f8dde0148a9416db019f8d6c3e17531c73485f3ea2c8026276"
+from config import settings
+
+secret_key = settings.SECRET_KEY
 
 # Algorithme de signature du token
-ALGORITHM = "HS256"
+ALGORITHM = settings.ALGORITHM
 
 # Durée de validité du token en minutes
-ACCESS_TOKEN_EXPIRE_MINUTES = 3600
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

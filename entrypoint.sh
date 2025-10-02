@@ -6,6 +6,7 @@
 
 # Appliquer les migrations de la base de données
 echo "Applying database migrations..."
+alembic revision --autogenerate -m "Auto migration"
 alembic upgrade head
 
 # Lancer l'application principale (Uvicorn)

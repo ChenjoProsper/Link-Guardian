@@ -1,22 +1,21 @@
-import { Children, createContext, useState } from "react";
+import { createContext, useState } from "react";
 import axios from "axios";
 
 const API_URL = "http://localhost:8000";
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({Children}) => {
+export const AuthProvider = ({children}) => {
     const [token,setToken] = useState(null);
     
     const login = async (email, password) => {
         try{
-            const formData = new FormData();
-            formData.append('username',email);
-            formData.append('password',password);
+            const userCredential = {
+                email: email,
+                password: password,
+            }
 
-            const response = await axios.post(`${API_URL}/login/`,formData,{
-                headers:{'Content-Type':'multipart/form-data'},
-            });
+            const response = await axios.post(`${API_URL}/login`,userCredential);
 
             const newToken = response.data.access_token;
             setToken(newToken);
@@ -31,7 +30,7 @@ export const AuthProvider = ({Children}) => {
 
     return (
         <AuthContext.Provider value={{token,login,logout}}>
-            {Children}
+            {children}
         </AuthContext.Provider>
     );
 

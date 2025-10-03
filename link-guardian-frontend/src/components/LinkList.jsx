@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import axios from "axios";
-
+import { AuthContext } from "../context/AuthContext";
 
 // const API_URL = "https://link-guardian-8hqk.onrender.com";
+
 
 const API_URL = "http://localhost:8000";
 
@@ -11,11 +12,25 @@ const LinkList = () => {
     const [links, setLinks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const {token} = useContext(AuthContext);
 
     useEffect(() => {
     const fetchLinks = async () => {
+
+        if(!token){
+            setLoading(false);
+            return;
+        }
+
         try {
-            const response = await axios.get(`${API_URL}/links/`);
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+
+            const response = await axios.get(`${API_URL}/links/`,config);
             setLinks(response.data);
         } catch (err) {
             setError(err.message);
@@ -26,7 +41,7 @@ const LinkList = () => {
     };
 
     fetchLinks();
-    }, []);
+    }, [token]);
 
     if (loading) return <div>Loading links...</div>;
     if (error) return <div style={{color:'red'}}>Error loading links: {error}</div>;

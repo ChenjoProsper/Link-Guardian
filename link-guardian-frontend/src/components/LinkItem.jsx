@@ -18,35 +18,22 @@ function LinkItem({ link, onDelete, onUpdate } ) {
         onDelete(link.id);
     };
 
-// Dans src/components/LinkItem.jsx
-
     const handleUpdate = async (event) => {
-    event.preventDefault();
-    if (!token) return;
+        event.preventDefault();
+        if (!token) return;
 
-    // --- DÉBUT DES LOGS DE DÉBOGAGE ---
-    console.log("--- Début de la mise à jour ---");
-    console.log("ID du lien:", link.id);
-    
-    const updatedLink = { url: editedUrl, description: editedDescription };
-    console.log("Données envoyées:", updatedLink);
-
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    console.log("Configuration Axios:", config);
-    // --- FIN DES LOGS DE DÉBOGAGE ---
-
-    try {
+        try {
+        const updatedLink = { url: editedUrl, description: editedDescription };
+        const config = { headers: { Authorization: `Bearer ${token}` } };
         await axios.put(`${API_URL}/links/${link.id}`, updatedLink, config);
         
-        setIsEditing(false);
-        onUpdate();
-    } catch (error) {
-        // On logue l'erreur complète pour avoir tous les détails
-        console.error("Erreur détaillée lors de la mise à jour:", error);
+        setIsEditing(false); // On quitte le mode édition
+        onUpdate(); // On rafraîchit la liste complète
+        } catch (error) {
+        console.error("Erreur lors de la mise à jour:", error);
         alert("Impossible de mettre à jour le lien.");
-    }
+        }
     };
-
 
     if (isEditing) {
         // Vue en mode ÉDITION
@@ -93,3 +80,5 @@ function LinkItem({ link, onDelete, onUpdate } ) {
 }
 
 export default LinkItem;
+
+

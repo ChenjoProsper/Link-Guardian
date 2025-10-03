@@ -101,7 +101,7 @@ def read_link(link_id: int, db: Session = Depends(get_db),current_user: UserSche
 
 @app.put("/links/{link_id}", response_model=LinkSchema,tags=['Links'])
 def update_link(link_id: int, updated_link: LinkCreate, db: Session = Depends(get_db),current_user: UserSchema = Depends(get_current_user)):
-    link = crud.get_user_links(db=db, user_id=current_user.id, link_id=link_id)
+    link = db.query(Link).filter(Link.id == link_id, Link.owner_id == current_user.id).first()
     if link is None:
         raise HTTPException(status_code=404, detail="Link not found")
     link.url = updated_link.url

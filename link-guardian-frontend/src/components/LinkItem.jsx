@@ -11,8 +11,8 @@ function LinkItem({ link, onDelete, onUpdate } ) {
     // Nouvel état pour savoir si on est en mode édition
     const [isEditing, setIsEditing] = useState(false);
     // Nouveaux états pour stocker les valeurs du formulaire de modification
-    const [editedUrl, setEditedUrl] = useState(link.url);
-    const [editedDescription, setEditedDescription] = useState(link.description);
+    const [url, setEditedUrl] = useState(link.url);
+    const [description, setEditedDescription] = useState(link.description);
 
     const handleDelete = () => {
         onDelete(link.id);
@@ -23,7 +23,7 @@ function LinkItem({ link, onDelete, onUpdate } ) {
         if (!token) return;
 
         try {
-        const updatedLink = {editedUrl,editedDescription };
+        const updatedLink = {url,description };
         const config = { headers: { Authorization: `Bearer ${token}` } };
         await axios.put(`${API_URL}/links/${link.id}`, updatedLink, config);
 
@@ -42,13 +42,13 @@ function LinkItem({ link, onDelete, onUpdate } ) {
             <form onSubmit={handleUpdate}>
             <input
                 type="url"
-                value={editedUrl}
+                value={url}
                 onChange={(e) => setEditedUrl(e.target.value)}
                 required
             />
             <input
                 type="text"
-                value={editedDescription}
+                value={description}
                 onChange={(e) => setEditedDescription(e.target.value)}
             />
             <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>

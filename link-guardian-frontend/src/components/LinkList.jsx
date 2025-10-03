@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext.jsx';
 import AddLinkForm from './AddLinkForm.jsx';
+import LinkItem from './LinkItem.jsx'; // On importe notre nouveau composant
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -11,12 +12,11 @@ function LinkList( ) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { token } = useContext(AuthContext);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const fetchLinks = async () => {
-        if (!token) {
-        setLoading(false);
-        return;
-        }
+        // ... (la fonction fetchLinks ne change pas) ...
+        if (!token) { setLoading(false); return; }
         try {
         setLoading(true);
         const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -24,7 +24,6 @@ function LinkList( ) {
         setLinks(response.data);
         } catch (err) {
         setError('Impossible de charger les liens.');
-        console.error("Erreur détaillée:", err);
         } finally {
         setLoading(false);
         }
@@ -34,27 +33,23 @@ function LinkList( ) {
         fetchLinks();
     }, [token]);
 
-    // 1. NOUVELLE FONCTION : Gérer la suppression
     const handleDelete = async (linkId) => {
+        // ... (la fonction handleDelete ne change pas) ...
         if (!token) return;
-
-        // On demande une confirmation pour éviter les erreurs
-        if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce lien ?")) {
-        return;
-        }
-
+        if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce lien ?")) return;
         try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        // On appelle l'endpoint DELETE de notre API
         await axios.delete(`${API_URL}/links/${linkId}`, config);
-        
-        // On rafraîchit la liste des liens pour que la suppression soit visible
         fetchLinks(); 
         } catch (error) {
-        console.error("Erreur lors de la suppression du lien:", error);
         alert("Impossible de supprimer le lien.");
         }
     };
+
+    const filteredLinks = links.filter(link => 
+        (link.description && link.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        link.url.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     if (loading) return <div>Chargement...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
@@ -64,23 +59,27 @@ function LinkList( ) {
         <AddLinkForm onAdd={fetchLinks} />
         <hr />
         <h2>Mes Liens</h2>
-        {links.length === 0 ? (
-            <p>Aucun lien à afficher pour le moment.</p>
+        <div style={{ margin: '20px 0' }}>
+            <input
+            type="text"
+            placeholder="Rechercher dans les liens..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ width: '100%', boxSizing: 'border-box' }}
+            />
+        </div>
+        {filteredLinks.length === 0 ? (
+            <p>{links.length === 0 ? "Aucun lien à afficher." : "Aucun lien ne correspond à votre recherche."}</p>
         ) : (
             <ul>
-            {links.map(link => (
-                <li key={link.id} style={{ marginBottom: '10px' }}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                    {link.description || link.url}
-                </a>
-                <p style={{ margin: '5px 0' }}>
-                    Ajouté le: {new Date(link.date_ajout).toLocaleDateString()}
-                </p>
-                {/* 2. NOUVEAU BOUTON : Le bouton de suppression */}
-                <button onClick={() => handleDelete(link.id)}>
-                    Supprimer
-                </button>
-                </li>
+            {/* On utilise le composant LinkItem ici */}
+            {filteredLinks.map(link => (
+                <LinkItem 
+                key={link.id} 
+                link={link} 
+                onDelete={handleDelete} 
+                onUpdate={fetchLinks} // On rafraîchit toute la liste après une mise à jour
+                />
             ))}
             </ul>
         )}

@@ -23,7 +23,7 @@ function LinkItem({ link, onDelete, onUpdate } ) {
         if (!token) return;
 
         try {
-        const updatedLink = {url:editedUrl, description:editedDescription };
+        const updatedLink = {editedUrl,editedDescription };
         const config = { headers: { Authorization: `Bearer ${token}` } };
         await axios.put(`${API_URL}/links/${link.id}`, updatedLink, config);
 

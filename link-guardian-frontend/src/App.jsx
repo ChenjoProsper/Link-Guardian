@@ -34,7 +34,7 @@ function App(){
         <>
           <Login/>
           <p>
-            Pas emcpre de compte ? {' '}
+            Pas encore de compte ? {' '}
             <button onClick={()=> setIsLoginView(false)}>
               Inscrivez-vous
             </button>

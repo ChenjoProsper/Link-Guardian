@@ -6,13 +6,25 @@ from sqlalchemy.orm import Session
 from schemas import *
 import crud,security
 from datetime import timedelta
+from fastapi.middleware.cors import CORSMiddleware
 
-
+origins = [
+    "http://localhost:5173",
+    "http://localhost:3000"
+]
 
 app = FastAPI(
     title="Link Guardian API",
     description="API pour gérer des liens web avec FastAPI et SQLAlchemy",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = origins,
+    allow_credentials=True,
+    allow_methods= ["*"],
+    allow_headers=["*"],
 )
 
 def get_db():
@@ -22,14 +34,14 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/users/", response_model=UserSchema,status_code=201,tags=['Users'])
+@app.post("/sigin/", response_model=UserSchema,status_code=201,tags=['Users'])
 def create(user: UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user)
 
-@app.post("/token",tags=['Users'])
+@app.post("/login/",tags=['Users'])
 def login_for_access_token(form_data: UserCreate, db: Session = Depends(get_db)):
 
     user = crud.get_user_by_email(db, email=form_data.email)

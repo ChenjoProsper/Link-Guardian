@@ -59,7 +59,7 @@ def test_create_user(client):
     Teste la création d'un nouvel utilisateur.
     """
     response = client.post(
-        "/users/",
+        "/sigin",
         json={"email": "testuser@example.com", "password": "password123"},
     )
     assert response.status_code == 201, response.text
@@ -73,12 +73,12 @@ def test_login_user(client):
     Teste la connexion d'un utilisateur existant.
     """
     response = client.post(
-        "/users/",
+        "/sigin",
         json={"email": "testuser@example.com", "password": "password123"},
     )
     
     response = client.post(
-        "/token/",
+        "/login",
         json={"email": "testuser@example.com", "password": "password123"},
     )
     assert response.status_code == 200, response.text

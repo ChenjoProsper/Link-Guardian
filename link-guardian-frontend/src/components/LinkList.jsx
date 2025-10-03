@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext.jsx';
 import AddLinkForm from './AddLinkForm.jsx';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 function LinkList( ) {
     const [links, setLinks] = useState([]);

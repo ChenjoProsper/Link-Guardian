@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext.jsx';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // onAdd est une fonction que le parent (LinkList ) nous passera
 // pour nous dire de rafraîchir la liste.

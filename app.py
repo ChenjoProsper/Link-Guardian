@@ -11,7 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost:5173",
     "http://localhost:3000",
-    "https://link-guardian-chi.vercel.app/"
+    "https://link-guardian-chi.vercel.app",
+    "https://link-guardian-git-main-prospers-projects-060fdb4b.vercel.app"
 ]
 
 app = FastAPI(
